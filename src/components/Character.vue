@@ -9,12 +9,15 @@
             {{char.description}}
         </li>
         </ul>
+
+        <img :src="url" alt="">
     </div>
 </template>
 
 <script>
 import {public_key} from '../marvel'
 import axios from 'axios'
+import { mapState } from 'vuex'
 
 export default {
     name: 'Character',
@@ -22,37 +25,43 @@ export default {
     data(){
 
         return{
-
-            character: [],
+            
+            url: '',
+            size: 'standard_large.jpg',
         
         }
     },
-
     mounted(){
 
-        this.getCharacter()
+        this.$store.dispatch('getCharacter', this.$route.params.id)
+
+        this.getImage();
+
+    },
+
+    computed: {
+        ...mapState({
+            character: state => state.character,
+            preUrl: state => state.url
+        })
     },
 
     methods: {
+        
+        // getCharacter: function(){
 
-        getCharacter: function(){
-
-            var characterId = this.$route.params.characterId
+        //     var characterId = this.$route.params.characterId
             
-            axios.get(`http://gateway.marvel.com/v1/public/characters?apikey=${public_key}`)
-            .then((result) => {
 
-                console.log(result)
-                result.data.data.results.forEach((item) => {
 
-                    this.character.push(item)
-                })
-            })
-            .catch((error) => {
-                console.log(error)
-            })
+        // },
 
+        getImage: function(){
+
+            this.url = `${this.preUrl}${this.size}`
         }
+
+
     }
 
 }

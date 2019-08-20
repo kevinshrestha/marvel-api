@@ -14,43 +14,28 @@
 
 <script>
 import { public_key, secret_key } from '../marvel';
+import { mapState } from 'vuex'
 import axios from 'axios'
 
 export default {
 
     name: 'Characters',
 
-    data(){
-
-        return{
-
-            characters: []
-       
-        }
-    },
-
     mounted() { 
+        
+        //calls data from action
+        this.$store.dispatch('getCharacters')
+        console.log(this.characters)
 
-        this.getCharacters()
-    
+    },
+    computed: {
+        ...mapState({
+            characters: state => state.characters
+        })
     },
 
     methods:{
 
-    getCharacters: function() {
-      axios.get(`http://gateway.marvel.com/v1/public/characters?apikey=${public_key}`)
-      .then((result) => {
-
-          console.log(result)
-
-          result.data.data.results.forEach((item) => {
-              console.log(item)
-
-              this.characters.push(item)
-          })
-      })
-      .catch((errr) => console.log.error)
-    }
   }
 }
 </script>
